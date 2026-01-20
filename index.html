@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-  <meta charset="UTF-8">
-  <title>Anoniminiai komplimentai</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>AKS – Anoniminė Komplimentų Siena</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AKS – anonimiškai siųsk komplimentus. Be paskyrų." />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>💌 Anoniminiai komplimentai</h1>
+<div class="app">
+  <header>
+    <h1>AKS 💌</h1>
+    <p>Anoniminė Komplimentų Siena</p>
+  </header>
 
-<form id="form">
-  <input id="to" placeholder="Kam skirtas?" maxlength="30" required>
-  <textarea id="text" placeholder="Parašyk komplimentą..." maxlength="200" required></textarea>
-  <button type="submit">Siųsti 💖</button>
-</form>
+  <section class="form">
+    <input id="to" placeholder="Kam skirtas? (vardas / nick / projektas)" maxlength="40">
+    <textarea id="text" placeholder="Parašyk komplimentą..." maxlength="300"></textarea>
+    <button id="send">Siųsti 💖</button>
+    <div class="hint">Max 300 simbolių · 1 žinutė / 30 sek</div>
+  </section>
 
-<div id="wall"></div>
+  <section class="controls">
+    <select id="sort">
+      <option value="new">Naujausi</option>
+      <option value="top">Top ❤️</option>
+    </select>
+    <button id="random">🎲 Random</button>
+  </section>
+
+  <section id="wall" class="wall"></section>
+
+  <footer>
+    <small>Projektas <b>AKS</b> · anonimiška · be paskyrų</small>
+  </footer>
+</div>
 
 <script type="module" src="app.js"></script>
 </body>
