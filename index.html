@@ -3,150 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KindCloud | Anonymous Compliments</title>
+    <title>Kindness Wall | Leave a Sticker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background: radial-gradient(circle at top left, #fdfcfb 0%, #e2d1c3 100%);
-            min-height: 100vh;
+        body {
+            background-color: #f0f2f5;
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 40px 40px;
+            font-family: 'Outfit', sans-serif;
         }
-        .card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        .sticker {
+            font-family: 'Gochi Hand', cursive;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: default;
         }
-        .gradient-text {
-            background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .sticker:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 50;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        .wall-height { min-height: 70vh; }
+        .color-dot.active { border: 3px solid #374151; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center p-6">
+<body class="p-4 md:p-8">
 
-    <div class="w-full max-w-md">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold gradient-text mb-2">KindCloud</h1>
-            <p class="text-gray-500 font-medium">Send a secret spark of joy.</p>
-        </header>
-
-        <div class="card rounded-3xl shadow-xl p-8">
-            
-            <div id="view-compose">
-                <label class="block text-gray-700 text-sm font-bold mb-2 ml-1">Your Compliment</label>
-                <textarea id="compliment-input" 
-                    class="w-full h-40 p-5 rounded-2xl bg-white/50 border-2 border-transparent focus:border-purple-300 focus:ring-0 outline-none transition-all text-gray-700 placeholder-gray-400"
-                    placeholder="Example: Your energy always lifts the room..."></textarea>
-                
-                <button onclick="createLink()" 
-                    class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200">
-                    Generate KindLink
-                </button>
-            </div>
-
-            <div id="view-share" class="hidden text-center">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-800">Ready to send!</h2>
-                    <p class="text-gray-500 text-sm">Copy the link below and send it to them anonymously.</p>
-                </div>
-                
-                <div class="relative">
-                    <input id="share-url" type="text" readonly 
-                        class="w-full p-4 bg-gray-100 rounded-xl text-gray-600 text-xs pr-20 border-none outline-none">
-                    <button onclick="copyToClipboard()" 
-                        class="absolute right-2 top-2 bottom-2 px-3 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition">
-                        COPY
-                    </button>
-                </div>
-
-                <button onclick="location.href=location.pathname" class="mt-8 text-gray-400 text-sm hover:text-indigo-500 transition underline underline-offset-4">
-                    Send another one
-                </button>
-            </div>
-
-            <div id="view-receive" class="hidden text-center">
-                <div class="mb-6">
-                    <span class="text-5xl">✨</span>
-                    <h2 class="text-2xl font-bold text-gray-800 mt-4">Someone says...</h2>
-                </div>
-                
-                <div class="bg-white/90 p-8 rounded-2xl shadow-inner border border-white italic text-gray-700 text-lg leading-relaxed mb-8">
-                    <span class="text-3xl text-indigo-300 block mb-2 opacity-50">"</span>
-                    <span id="display-text"></span>
-                    <span class="text-3xl text-indigo-300 block mt-2 opacity-50 text-right">"</span>
-                </div>
-
-                <a href="/" class="inline-block w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
-                    Create One for Someone Else
-                </a>
-            </div>
-
+    <header class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div>
+            <h1 class="text-4xl font-bold text-slate-800">The Kindness Wall</h1>
+            <p class="text-slate-500">Post a digital sticker. Spread some light.</p>
         </div>
+        
+        <div class="bg-white p-4 rounded-2xl shadow-lg flex flex-col gap-3 w-full md:w-96 border border-slate-100">
+            <textarea id="note-text" placeholder="Write a compliment..." 
+                class="w-full h-20 p-3 rounded-lg bg-slate-50 border-none resize-none focus:ring-2 focus:ring-yellow-400 outline-none"></textarea>
+            
+            <div class="flex items-center justify-between">
+                <div class="flex gap-2">
+                    <button onclick="setColor('#fef08a', this)" class="color-dot active w-6 h-6 rounded-full bg-yellow-200" data-color="#fef08a"></button>
+                    <button onclick="setColor('#bbf7d0', this)" class="color-dot w-6 h-6 rounded-full bg-green-200" data-color="#bbf7d0"></button>
+                    <button onclick="setColor('#bfdbfe', this)" class="color-dot w-6 h-6 rounded-full bg-blue-200" data-color="#bfdbfe"></button>
+                    <button onclick="setColor('#fbcfe8', this)" class="color-dot w-6 h-6 rounded-full bg-pink-200" data-color="#fbcfe8"></button>
+                    <button onclick="setColor('#ddd6fe', this)" class="color-dot w-6 h-6 rounded-full bg-purple-200" data-color="#ddd6fe"></button>
+                </div>
+                <button onclick="postSticker()" class="bg-slate-800 text-white px-6 py-2 rounded-xl font-bold hover:bg-slate-700 transition">
+                    Post ✨
+                </button>
+            </div>
+        </div>
+    </header>
 
-        <footer class="mt-12 text-center text-gray-400 text-xs uppercase tracking-widest">
-            Privacy First • No Data Stored • 2024
-        </footer>
-    </div>
+    <main id="sticker-wall" class="max-w-7xl mx-auto wall-height relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        </main>
 
     <script>
-        const composeView = document.getElementById('view-compose');
-        const shareView = document.getElementById('view-share');
-        const receiveView = document.getElementById('view-receive');
-        const input = document.getElementById('compliment-input');
-        const displayText = document.getElementById('display-text');
-        const shareUrlInput = document.getElementById('share-url');
+        let selectedColor = '#fef08a'; // Default yellow
 
-        // Check if there is a message in the URL on load
-        window.addEventListener('load', () => {
-            const params = new URLSearchParams(window.location.search);
-            const msg = params.get('m');
+        // Load stickers from LocalStorage on startup
+        window.onload = () => {
+            const saved = JSON.parse(localStorage.getItem('kindnessStickers')) || [];
+            saved.forEach(s => renderSticker(s.text, s.color, s.rotation));
+        };
 
-            if (msg) {
-                try {
-                    const decoded = atob(msg); // Decodes Base64
-                    displayText.textContent = decoded;
-                    composeView.classList.add('hidden');
-                    receiveView.classList.remove('hidden');
-                } catch (e) {
-                    console.error("Invalid KindLink");
-                }
-            }
-        });
-
-        function createLink() {
-            const val = input.value.trim();
-            if (!val) {
-                input.classList.add('border-red-300');
-                return;
-            }
-
-            // Encode message to Base64 to put in URL
-            const encoded = btoa(unescape(encodeURIComponent(val)));
-            const link = window.location.origin + window.location.pathname + '?m=' + encoded;
-            
-            shareUrlInput.value = link;
-            composeView.classList.add('hidden');
-            shareView.classList.remove('hidden');
+        function setColor(color, el) {
+            selectedColor = color;
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        function copyToClipboard() {
-            shareUrlInput.select();
-            document.execCommand('copy');
+        function postSticker() {
+            const text = document.getElementById('note-text').value.trim();
+            if (!text) return;
+
+            const rotation = Math.floor(Math.random() * 10) - 5; // Random tilt between -5 and 5 degrees
             
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'COPIED!';
-            btn.classList.replace('bg-indigo-600', 'bg-green-500');
+            // Save to LocalStorage
+            const saved = JSON.parse(localStorage.getItem('kindnessStickers')) || [];
+            saved.push({ text, color: selectedColor, rotation });
+            localStorage.setItem('kindnessStickers', JSON.stringify(saved));
+
+            renderSticker(text, selectedColor, rotation);
+            document.getElementById('note-text').value = '';
+        }
+
+        function renderSticker(text, color, rotation) {
+            const wall = document.getElementById('sticker-wall');
+            const sticker = document.createElement('div');
             
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.classList.replace('bg-green-500', 'bg-indigo-600');
-            }, 2000);
+            sticker.className = `sticker p-6 shadow-md aspect-square flex items-center justify-center text-center text-xl text-slate-800 leading-tight break-words overflow-hidden`;
+            sticker.style.backgroundColor = color;
+            sticker.style.transform = `rotate(${rotation}deg)`;
+            
+            // Add decorative "tape" or "pin" look
+            const innerHTML = `
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-4 bg-white/40 backdrop-blur-sm"></div>
+                ${text}
+            `;
+            
+            sticker.innerHTML = innerHTML;
+            
+            // Insert at the beginning so newest is first
+            wall.prepend(sticker);
         }
     </script>
 </body>
