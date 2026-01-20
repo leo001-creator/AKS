@@ -1,42 +1,99 @@
 <!DOCTYPE html>
-<html lang="lt">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AKS – Anoniminė Komplimentų Siena</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="AKS – anonimiškai siųsk komplimentus. Be paskyrų." />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KindCloud | Send a Spark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background: linear-gradient(135deg, #e0f2fe 0%, #fef2f2 100%); }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="app">
-  <header>
-    <h1>AKS 💌</h1>
-    <p>Anoniminė Komplimentų Siena</p>
-  </header>
+    <div class="max-w-md w-full glass rounded-3xl shadow-2xl p-8 text-center">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-800">☁️ KindCloud</h1>
+            <p class="text-slate-500 italic">Anonymously brighten someone's day.</p>
+        </div>
 
-  <section class="form">
-    <input id="to" placeholder="Kam skirtas? (vardas / nick / projektas)" maxlength="40">
-    <textarea id="text" placeholder="Parašyk komplimentą..." maxlength="300"></textarea>
-    <button id="send">Siųsti 💖</button>
-    <div class="hint">Max 300 simbolių · 1 žinutė / 30 sek</div>
-  </section>
+        <div id="app-content">
+            <div id="view-compose">
+                <textarea id="compliment-text" 
+                    class="w-full h-32 p-4 rounded-2xl border-none focus:ring-2 focus:ring-pink-300 resize-none text-slate-700 bg-white/50"
+                    placeholder="Write something lovely about someone..."></textarea>
+                
+                <button onclick="generateLink()" 
+                    class="mt-6 w-full bg-slate-800 text-white font-semibold py-3 rounded-xl hover:bg-slate-700 transition duration-300">
+                    Create KindLink
+                </button>
+            </div>
 
-  <section class="controls">
-    <select id="sort">
-      <option value="new">Naujausi</option>
-      <option value="top">Top ❤️</option>
-    </select>
-    <button id="random">🎲 Random</button>
-  </section>
+            <div id="view-success" class="hidden">
+                <div class="bg-green-100 text-green-700 p-4 rounded-xl mb-4">
+                    Link created! Now send it to them.
+                </div>
+                <input id="share-url" type="text" readonly 
+                    class="w-full p-3 bg-white rounded-lg border border-slate-200 text-sm text-slate-600 mb-4">
+                <button onclick="copyLink()" 
+                    class="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl hover:bg-pink-400 transition">
+                    Copy to Clipboard
+                </button>
+                <button onclick="resetApp()" class="mt-4 text-slate-400 text-sm underline">Send another</button>
+            </div>
 
-  <section id="wall" class="wall"></section>
+            <div id="view-receive" class="hidden">
+                <div class="py-10">
+                    <span class="text-5xl">🎁</span>
+                    <h2 class="text-xl font-semibold text-slate-800 mt-4 mb-2">You received a compliment!</h2>
+                    <p id="received-text" class="text-lg text-slate-700 italic bg-white/80 p-6 rounded-2xl shadow-inner border border-white"></p>
+                </div>
+                <button onclick="window.location.search = ''" 
+                    class="w-full bg-slate-800 text-white font-semibold py-3 rounded-xl">
+                    Send One Back
+                </button>
+            </div>
+        </div>
+    </div>
 
-  <footer>
-    <small>Projektas <b>AKS</b> · anonimiška · be paskyrų</small>
-  </footer>
-</div>
+    <script>
+        const appCompose = document.getElementById('view-compose');
+        const appSuccess = document.getElementById('view-success');
+        const appReceive = document.getElementById('view-receive');
+        const urlParams = new URLSearchParams(window.location.search);
+        const msgParam = urlParams.get('msg');
 
-<script type="module" src="app.js"></script>
+        // Initial Routing
+        if (msgParam) {
+            appCompose.classList.add('hidden');
+            appReceive.classList.remove('hidden');
+            document.getElementById('received-text').innerText = `"${atob(msgParam)}"`;
+        }
+
+        function generateLink() {
+            const text = document.getElementById('compliment-text').value;
+            if (!text.trim()) return alert("Write something first!");
+
+            const encodedMsg = btoa(text); // Base64 encoding for the URL
+            const shareUrl = window.location.origin + window.location.pathname + '?msg=' + encodedMsg;
+            
+            document.getElementById('share-url').value = shareUrl;
+            appCompose.classList.add('hidden');
+            appSuccess.classList.remove('hidden');
+        }
+
+        function copyLink() {
+            const copyText = document.getElementById('share-url');
+            copyText.select();
+            document.execCommand("copy");
+            alert("Link copied! Send it via DM, Text, or Email.");
+        }
+
+        function resetApp() {
+            window.location.search = '';
+        }
+    </script>
 </body>
 </html>
