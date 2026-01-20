@@ -1,110 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kindness Wall | Leave a Sticker</title>
+    <title>Gerumo Sienelė | KindCloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
-            background-color: #f0f2f5;
-            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
             font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
         }
         .sticker {
             font-family: 'Gochi Hand', cursive;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: default;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .sticker:hover {
-            transform: scale(1.05) rotate(0deg) !important;
-            z-index: 50;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: scale(1.08) rotate(0deg) !important;
+            z-index: 40;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        .wall-height { min-height: 70vh; }
-        .color-dot.active { border: 3px solid #374151; }
+        .admin-only { display: none; }
+        .is-admin .admin-only { display: block; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <header class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-            <h1 class="text-4xl font-bold text-slate-800">The Kindness Wall</h1>
-            <p class="text-slate-500">Post a digital sticker. Spread some light.</p>
+    <nav class="fixed top-0 left-0 right-0 z-50 p-4 glass-nav border-b border-slate-200 flex justify-between items-center">
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">☁️ Gerumo Sienelė</h1>
+        <div class="flex gap-4">
+            <button onclick="checkAdmin()" id="admin-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full text-sm font-bold transition">
+                🔑 ADMIN
+            </button>
+            <button id="logout-btn" onclick="logout()" class="admin-only bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-bold">
+                Atsijungti
+            </button>
         </div>
-        
-        <div class="bg-white p-4 rounded-2xl shadow-lg flex flex-col gap-3 w-full md:w-96 border border-slate-100">
-            <textarea id="note-text" placeholder="Write a compliment..." 
-                class="w-full h-20 p-3 rounded-lg bg-slate-50 border-none resize-none focus:ring-2 focus:ring-yellow-400 outline-none"></textarea>
-            
-            <div class="flex items-center justify-between">
-                <div class="flex gap-2">
-                    <button onclick="setColor('#fef08a', this)" class="color-dot active w-6 h-6 rounded-full bg-yellow-200" data-color="#fef08a"></button>
-                    <button onclick="setColor('#bbf7d0', this)" class="color-dot w-6 h-6 rounded-full bg-green-200" data-color="#bbf7d0"></button>
-                    <button onclick="setColor('#bfdbfe', this)" class="color-dot w-6 h-6 rounded-full bg-blue-200" data-color="#bfdbfe"></button>
-                    <button onclick="setColor('#fbcfe8', this)" class="color-dot w-6 h-6 rounded-full bg-pink-200" data-color="#fbcfe8"></button>
-                    <button onclick="setColor('#ddd6fe', this)" class="color-dot w-6 h-6 rounded-full bg-purple-200" data-color="#ddd6fe"></button>
-                </div>
-                <button onclick="postSticker()" class="bg-slate-800 text-white px-6 py-2 rounded-xl font-bold hover:bg-slate-700 transition">
-                    Post ✨
-                </button>
-            </div>
-        </div>
-    </header>
+    </nav>
 
-    <main id="sticker-wall" class="max-w-7xl mx-auto wall-height relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        </main>
+    <div class="mt-24 max-w-6xl mx-auto">
+        <section class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 mb-12 animate__animated animate__fadeInDown">
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="flex-1 w-full">
+                    <textarea id="note-text" placeholder="Parašyk ką nors gražaus..." 
+                        class="w-full h-24 p-4 rounded-2xl bg-slate-50 border-none resize-none focus:ring-4 focus:ring-purple-100 outline-none text-lg"></textarea>
+                </div>
+                <div class="flex flex-col gap-4 w-full md:w-auto">
+                    <div class="flex justify-center gap-3">
+                        <button onclick="setColor('#fef08a', this)" class="color-dot border-2 border-slate-800 w-8 h-8 rounded-full bg-yellow-200" data-color="#fef08a"></button>
+                        <button onclick="setColor('#bbf7d0', this)" class="color-dot w-8 h-8 rounded-full bg-green-200" data-color="#bbf7d0"></button>
+                        <button onclick="setColor('#bfdbfe', this)" class="color-dot w-8 h-8 rounded-full bg-blue-200" data-color="#bfdbfe"></button>
+                        <button onclick="setColor('#fbcfe8', this)" class="color-dot w-8 h-8 rounded-full bg-pink-200" data-color="#fbcfe8"></button>
+                    </div>
+                    <button onclick="postSticker()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition transform active:scale-95 shadow-lg">
+                        Priklijuoti ✨
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <main id="sticker-wall" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            </main>
+    </div>
 
     <script>
-        let selectedColor = '#fef08a'; // Default yellow
+        let selectedColor = '#fef08a';
+        let isAdmin = false;
 
-        // Load stickers from LocalStorage on startup
+        // Paleidimas
         window.onload = () => {
-            const saved = JSON.parse(localStorage.getItem('kindnessStickers')) || [];
-            saved.forEach(s => renderSticker(s.text, s.color, s.rotation));
+            renderAll();
+            if(sessionStorage.getItem('admin') === 'true') {
+                enableAdminMode();
+            }
         };
 
         function setColor(color, el) {
             selectedColor = color;
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            el.classList.add('active');
+            document.querySelectorAll('.color-dot').forEach(d => d.style.border = 'none');
+            el.style.border = '3px solid #374151';
+        }
+
+        function checkAdmin() {
+            const code = prompt("Įveskite administratoriaus kodą:");
+            if (code === "2011") {
+                sessionStorage.setItem('admin', 'true');
+                enableAdminMode();
+                alert("Prisijungta sėkmingai!");
+            } else {
+                alert("Neteisingas kodas!");
+            }
+        }
+
+        function enableAdminMode() {
+            isAdmin = true;
+            document.body.classList.add('is-admin');
+            document.getElementById('admin-btn').classList.add('hidden');
+            renderAll();
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin');
+            location.reload();
         }
 
         function postSticker() {
             const text = document.getElementById('note-text').value.trim();
             if (!text) return;
 
-            const rotation = Math.floor(Math.random() * 10) - 5; // Random tilt between -5 and 5 degrees
-            
-            // Save to LocalStorage
-            const saved = JSON.parse(localStorage.getItem('kindnessStickers')) || [];
-            saved.push({ text, color: selectedColor, rotation });
-            localStorage.setItem('kindnessStickers', JSON.stringify(saved));
+            const stickers = JSON.parse(localStorage.getItem('kindStickers')) || [];
+            const newSticker = {
+                id: Date.now(),
+                text: text,
+                color: selectedColor,
+                rotation: Math.floor(Math.random() * 8) - 4,
+                hearts: 0,
+                reports: 0
+            };
 
-            renderSticker(text, selectedColor, rotation);
+            stickers.push(newSticker);
+            localStorage.setItem('kindStickers', JSON.stringify(stickers));
+            
             document.getElementById('note-text').value = '';
+            renderAll();
         }
 
-        function renderSticker(text, color, rotation) {
+        function handleAction(id, action) {
+            let stickers = JSON.parse(localStorage.getItem('kindStickers'));
+            const index = stickers.findIndex(s => s.id === id);
+
+            if (action === 'heart') {
+                stickers[index].hearts++;
+            } else if (action === 'report') {
+                stickers[index].reports++;
+                alert("Pranešimas gautas. Administratoriai peržiūrės šį įrašą.");
+            } else if (action === 'delete') {
+                if(confirm("Ar tikrai norite ištrinti šį lipduką?")) {
+                    stickers.splice(index, 1);
+                }
+            }
+
+            localStorage.setItem('kindStickers', JSON.stringify(stickers));
+            renderAll();
+        }
+
+        function renderAll() {
             const wall = document.getElementById('sticker-wall');
-            const sticker = document.createElement('div');
-            
-            sticker.className = `sticker p-6 shadow-md aspect-square flex items-center justify-center text-center text-xl text-slate-800 leading-tight break-words overflow-hidden`;
-            sticker.style.backgroundColor = color;
-            sticker.style.transform = `rotate(${rotation}deg)`;
-            
-            // Add decorative "tape" or "pin" look
-            const innerHTML = `
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-4 bg-white/40 backdrop-blur-sm"></div>
-                ${text}
-            `;
-            
-            sticker.innerHTML = innerHTML;
-            
-            // Insert at the beginning so newest is first
-            wall.prepend(sticker);
+            const stickers = JSON.parse(localStorage.getItem('kindStickers')) || [];
+            wall.innerHTML = '';
+
+            stickers.reverse().forEach(s => {
+                const div = document.createElement('div');
+                div.className = `sticker relative p-8 shadow-lg animate__animated animate__zoomIn bg-opacity-90`;
+                div.style.backgroundColor = s.color;
+                div.style.transform = `rotate(${s.rotation}deg)`;
+                
+                div.innerHTML = `
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-16 h-6 bg-white/30 backdrop-blur-sm"></div>
+                    
+                    ${isAdmin ? `<div class="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded">🚩 Pranešimai: ${s.reports}</div>` : ''}
+
+                    <p class="text-2xl text-slate-800 text-center mb-6 break-words">${s.text}</p>
+                    
+                    <div class="flex justify-between items-center mt-auto">
+                        <button onclick="handleAction(${s.id}, 'heart')" class="group flex items-center gap-1 hover:scale-110 transition">
+                            <span class="text-2xl">❤️</span>
+                            <span class="text-sm font-bold text-slate-600">${s.hearts}</span>
+                        </button>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="handleAction(${s.id}, 'report')" title="Pranešti" class="opacity-30 hover:opacity-100 transition text-xl">
+                                ⚠️
+                            </button>
+                            <button onclick="handleAction(${s.id}, 'delete')" class="admin-only text-xl hover:scale-125 transition">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                `;
+                wall.appendChild(div);
+            });
         }
     </script>
 </body>
