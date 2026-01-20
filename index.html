@@ -3,80 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sielos Šviesa | Anoniminė Gerumo Platforma</title>
+    <title>SoulLight | Neoninis Gerumas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root {
-            --primary: #6366f1; /* Galite pakeisti šią spalvą pagrindiniam akcentui */
+            --accent: #8b5cf6;
+            --bg-dark: #020617;
         }
         body {
-            background-color: #0f172a; /* Tamsus fonas */
-            color: #f1f5f9;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) #0f172a;
         }
-        .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .sticker {
+        /* Neoninis spindesys lipdukams */
+        .sticker-card {
             font-family: 'Gochi Hand', cursive;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
-        .nav-link {
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .sticker-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            pointer-events: none;
         }
-        .nav-link:hover { color: #818cf8; }
+        .sticker-card:hover {
+            transform: translateY(-10px) scale(1.02) rotate(0deg) !important;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-active { color: var(--accent); border-bottom: 2px solid var(--accent); }
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .page.active { display: block; }
+        
+        /* Floating particles animacija fonui */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
         }
+        .floating { animation: float 6s ease-in-out infinite; }
     </style>
 </head>
-<body>
+<body class="selection:bg-indigo-500 selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
-        <div class="text-2xl font-extrabold tracking-tighter text-indigo-400">SIELOS ŠVIESA</div>
+    <nav class="fixed top-0 w-full z-50 glass-panel px-6 py-4 flex justify-between items-center border-b border-indigo-500/10">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg rotate-12 flex items-center justify-center font-bold text-xl">S</div>
+            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">SOULLIGHT</span>
+        </div>
         
-        <div class="hidden md:flex gap-8 font-medium text-sm uppercase tracking-widest">
-            <span onclick="showPage('wall')" class="nav-link">Sienelė</span>
-            <span onclick="showPage('about')" class="nav-link">Apie projektą</span>
-            <span onclick="showPage('guide')" class="nav-link">Gerumo Gidas</span>
+        <div class="hidden md:flex gap-8 font-semibold text-xs uppercase tracking-widest">
+            <button onclick="showPage('wall')" id="nav-wall" class="nav-link nav-active">Sienelė</button>
+            <button onclick="showPage('about')" id="nav-about" class="nav-link">Misija</button>
+            <button onclick="showPage('stats')" id="nav-stats" class="nav-link">Bendruomenė</button>
         </div>
 
-        <div class="flex items-center gap-4">
-            <button onclick="checkAdmin()" class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1 rounded border border-white/10 transition">ADMIN</button>
-            <button id="logout-btn" onclick="logout()" class="hidden bg-red-500/20 text-red-400 px-3 py-1 rounded text-xs">Atsijungti</button>
+        <div class="flex items-center gap-3">
+            <button onclick="checkAdmin()" class="hover:text-indigo-400 transition text-[10px] border border-white/10 px-2 py-1 rounded">ADMIN</button>
+            <button id="logout-btn" onclick="logout()" class="hidden bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-bold">IŠEITI</button>
         </div>
     </nav>
 
-    <div class="pt-28 pb-20 px-4 max-w-6xl mx-auto">
+    <div class="pt-32 pb-20 px-4 max-w-6xl mx-auto">
         
         <section id="wall" class="page active">
-            <div class="text-center mb-12 animate__animated animate__fadeIn">
-                <h2 class="text-5xl font-extrabold mb-4">Palik savo šviesos pėdsaką</h2>
-                <p class="text-slate-400">Jūsų anoniminiai komplimentai pasiekia širdis.</p>
+            <div class="glass-panel p-4 rounded-2xl mb-12 text-center border-indigo-500/30 border animate__animated animate__pulse animate__infinite animate__slow">
+                <span class="text-indigo-400 text-xs font-bold uppercase tracking-widest block mb-1">Dienos kibirkštis ✨</span>
+                <p id="daily-quote" class="italic text-slate-300">„Tavo gerumas yra tavo supergalia.“</p>
             </div>
 
-            <div class="glass p-6 rounded-3xl mb-16 max-w-2xl mx-auto border-indigo-500/20 shadow-2xl">
-                <textarea id="note-text" placeholder="Parašykite kažką įkvepiančio..." 
-                    class="w-full h-32 bg-transparent border-none outline-none text-xl resize-none placeholder:text-slate-600"></textarea>
-                <div class="flex flex-wrap justify-between items-center gap-4 mt-4 border-t border-white/5 pt-4">
-                    <div class="flex gap-3">
-                        <button onclick="setColor('#fbbf24', this)" class="w-8 h-8 rounded-full bg-amber-400 border-2 border-white ring-2 ring-transparent" style="box-shadow: 0 0 15px #fbbf24;"></button>
-                        <button onclick="setColor('#34d399', this)" class="w-8 h-8 rounded-full bg-emerald-400"></button>
-                        <button onclick="setColor('#818cf8', this)" class="w-8 h-8 rounded-full bg-indigo-400"></button>
-                        <button onclick="setColor('#f472b6', this)" class="w-8 h-8 rounded-full bg-pink-400"></button>
+            <div class="flex justify-between items-center mb-8 px-2">
+                <h2 class="text-2xl font-bold">Žinučių siena</h2>
+                <select onchange="renderWall(this.value)" class="bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs outline-none">
+                    <option value="new">Naujausi</option>
+                    <option value="top">Populiariausi</option>
+                </select>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl mb-16 border-l-4 border-l-indigo-600 shadow-2xl">
+                <textarea id="note-text" placeholder="Parašykite anoniminį komplimentą..." 
+                    class="w-full h-24 bg-transparent border-none outline-none text-xl resize-none placeholder:text-slate-700 mb-4"></textarea>
+                <div class="flex justify-between items-center gap-4 border-t border-white/5 pt-4">
+                    <div class="flex gap-2">
+                        <button onclick="setColor('#c084fc', this)" class="w-10 h-10 rounded-xl bg-purple-400 border-2 border-white ring-offset-2 ring-offset-slate-900"></button>
+                        <button onclick="setColor('#2dd4bf', this)" class="w-10 h-10 rounded-xl bg-teal-400"></button>
+                        <button onclick="setColor('#fb7185', this)" class="w-10 h-10 rounded-xl bg-rose-400"></button>
+                        <button onclick="setColor('#60a5fa', this)" class="w-10 h-10 rounded-xl bg-blue-400"></button>
                     </div>
-                    <button onclick="postSticker()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-10 py-3 rounded-full font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20">
-                        SIŲSTI ✨
+                    <button onclick="postSticker()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2">
+                        PASKELBTI <span class="hidden md:inline">✨</span>
                     </button>
                 </div>
             </div>
@@ -85,75 +111,86 @@
                 </div>
         </section>
 
-        <section id="about" class="page max-w-3xl mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-8">Apie Projektą</h2>
-            <div class="glass p-8 rounded-3xl text-left leading-relaxed text-slate-300">
-                <p class="mb-4 text-white font-semibold">„Sielos Šviesa“ – tai saugi erdvė tavo gerumui.</p>
-                <p class="mb-4">Mes tikime, kad vienas anoniminis sakinys gali pakeisti žmogaus dieną. Ši platforma sukurta tam, kad skatintume empatiją ir palaikymą skaitmeniniame pasaulyje, kuriame dažnai trūksta šilumos.</p>
-                <p>Visi įrašai yra anoniminiai. Mes nerenkame jūsų duomenų, slapukų ar IP adresų. Tik grynas gerumas.</p>
+        <section id="about" class="page text-center max-w-2xl mx-auto">
+            <div class="floating mb-8 text-6xl">🕯️</div>
+            <h2 class="text-4xl font-black mb-6">Mūsų Misija</h2>
+            <p class="text-slate-400 text-lg leading-relaxed mb-8">
+                SoulLight gimė iš idėjos, kad internetas neturi būti tik triukšmas. Tai tamsus kampelis, kurį apšviečia jūsų žodžiai. Kiekvienas lipdukas yra priminimas, kad kažkas kažkur yra pastebėtas ir įvertintas.
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-panel p-4 rounded-xl">
+                    <div class="text-indigo-400 font-bold text-2xl">100%</div>
+                    <div class="text-xs text-slate-500 uppercase">Anonimiška</div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl">
+                    <div class="text-indigo-400 font-bold text-2xl">0%</div>
+                    <div class="text-xs text-slate-500 uppercase">Duomenų rinkimo</div>
+                </div>
             </div>
         </section>
 
-        <section id="guide" class="page max-w-4xl mx-auto">
-            <h2 class="text-4xl font-bold mb-12 text-center">Kaip rašyti komplimentus?</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-2xl">
-                    <h3 class="text-indigo-400 font-bold mb-2">Būkite konkretūs</h3>
-                    <p class="text-sm text-slate-400">Vietoj „tu fainas“, parašyk „tavo humoro jausmas priverčia visus nusišypsoti“.</p>
+        <section id="stats" class="page max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Bendruomenės Pulsas</h2>
+            <div id="stats-content" class="space-y-4">
                 </div>
-                <div class="glass p-6 rounded-2xl">
-                    <h3 class="text-indigo-400 font-bold mb-2">Pastebėkite pastangas</h3>
-                    <p class="text-sm text-slate-400">Pagyrimas už tai, kiek žmogus stengiasi, dažnai yra vertingesnis už pagyrimą už sėkmę.</p>
-                </div>
-            </div>
         </section>
 
     </div>
 
     <script>
-        let selectedColor = '#fbbf24';
+        const playSound = () => {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+            osc.connect(gain);
+            gain.connect(context.destination);
+            osc.frequency.setValueAtTime(800, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1);
+            osc.start();
+            osc.stop(context.currentTime + 0.1);
+        };
+
+        let selectedColor = '#c084fc';
         let isAdmin = sessionStorage.getItem('admin') === 'true';
 
         // Puslapių valdymas
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-active'));
             document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0,0);
+            document.getElementById('nav-' + pageId).classList.add('nav-active');
+            if(pageId === 'stats') updateStats();
         }
 
-        // Administratoriaus logika
-        function checkAdmin() {
-            const code = prompt("Įveskite administratoriaus kodą:");
-            if (code === "2011") {
-                sessionStorage.setItem('admin', 'true');
-                isAdmin = true;
-                location.reload();
-            } else {
-                alert("Klaida!");
-            }
-        }
-
-        function logout() {
-            sessionStorage.removeItem('admin');
-            location.reload();
-        }
-
-        if(isAdmin) {
-            document.getElementById('logout-btn').classList.remove('hidden');
-            document.body.classList.add('is-admin');
-        }
+        // Citatos
+        const quotes = [
+            "„Tavo šypsena gali pakeisti pasaulį.“",
+            "„Esi pakankamas toks, koks esi.“",
+            "„Mažas gerumas sukuria dideles bangas.“",
+            "„Šiandien puiki diena ką nors pradžiuginti.“"
+        ];
+        document.getElementById('daily-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
 
         function setColor(color, el) {
             selectedColor = color;
-            document.querySelectorAll('.flex button').forEach(b => b.style.boxShadow = 'none');
-            el.style.boxShadow = `0 0 15px ${color}`;
+            document.querySelectorAll('.flex button').forEach(b => b.style.ringWidth = '0px');
+            el.style.ringWidth = '4px';
+            playSound();
+        }
+
+        function checkAdmin() {
+            const code = prompt("Admin kodas:");
+            if (code === "2011") {
+                sessionStorage.setItem('admin', 'true');
+                location.reload();
+            }
         }
 
         function postSticker() {
             const text = document.getElementById('note-text').value.trim();
-            if (!text) return;
+            if (text.length < 3) return alert("Parašykite šiek tiek daugiau...");
 
-            const stickers = JSON.parse(localStorage.getItem('soulStickers')) || [];
+            const stickers = JSON.parse(localStorage.getItem('soulV3')) || [];
             stickers.push({
                 id: Date.now(),
                 text: text,
@@ -162,53 +199,77 @@
                 reports: 0,
                 date: new Date().toLocaleDateString('lt-LT')
             });
-            localStorage.setItem('soulStickers', JSON.stringify(stickers));
+            localStorage.setItem('soulV3', JSON.stringify(stickers));
             document.getElementById('note-text').value = '';
+            playSound();
             renderWall();
         }
 
         function handleAction(id, action) {
-            let stickers = JSON.parse(localStorage.getItem('soulStickers'));
+            let stickers = JSON.parse(localStorage.getItem('soulV3'));
             const idx = stickers.findIndex(s => s.id === id);
 
-            if(action === 'heart') stickers[idx].hearts++;
-            if(action === 'report') {
-                stickers[idx].reports++;
-                alert("Pranešta.");
+            if(action === 'heart') {
+                stickers[idx].hearts++;
+                playSound();
             }
-            if(action === 'delete') {
-                if(confirm("Trinti?")) stickers.splice(idx, 1);
+            if(action === 'delete') stickers.splice(idx, 1);
+            if(action === 'share') {
+                const link = `SoulLight Komplimentas: "${stickers[idx].text}"`;
+                navigator.clipboard.writeText(link);
+                alert("Nukopijuota į iškarpinę!");
             }
 
-            localStorage.setItem('soulStickers', JSON.stringify(stickers));
+            localStorage.setItem('soulV3', JSON.stringify(stickers));
             renderWall();
         }
 
-        function renderWall() {
+        function updateStats() {
+            const stickers = JSON.parse(localStorage.getItem('soulV3')) || [];
+            const hearts = stickers.reduce((acc, s) => acc + s.hearts, 0);
+            const content = document.getElementById('stats-content');
+            content.innerHTML = `
+                <div class="glass-panel p-6 rounded-2xl flex justify-between items-center">
+                    <span>Iš viso gerų žodžių:</span>
+                    <span class="text-indigo-400 font-bold">${stickers.length}</span>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl flex justify-between items-center">
+                    <span>Sukurta džiaugsmo (❤️):</span>
+                    <span class="text-rose-400 font-bold">${hearts}</span>
+                </div>
+            `;
+        }
+
+        function renderWall(sort = 'new') {
             const wall = document.getElementById('sticker-wall');
-            const stickers = JSON.parse(localStorage.getItem('soulStickers')) || [];
+            let stickers = JSON.parse(localStorage.getItem('soulV3')) || [];
+            
+            if(sort === 'top') stickers.sort((a,b) => b.hearts - a.hearts);
+            else stickers.sort((a,b) => b.id - a.id);
+
             wall.innerHTML = '';
 
-            stickers.reverse().forEach(s => {
+            stickers.forEach(s => {
                 const card = document.createElement('div');
-                card.className = `sticker p-8 rounded-2xl shadow-xl transform rotate-1 hover:rotate-0 animate__animated animate__fadeInUp`;
+                const isPopular = s.hearts >= 5;
+                card.className = `sticker-card p-8 rounded-[2.5rem] shadow-2xl animate__animated animate__zoomIn`;
                 card.style.backgroundColor = s.color;
-                card.style.color = '#1e293b';
+                card.style.color = '#020617';
+                card.style.transform = `rotate(${Math.random() * 4 - 2}deg)`;
 
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4 opacity-50 text-[10px] font-bold uppercase tracking-widest">
-                        <span>${s.date}</span>
-                        ${isAdmin ? `<span class="bg-black/10 px-2 py-0.5 rounded">Reports: ${s.reports}</span>` : ''}
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] font-bold opacity-60 uppercase">${s.date}</span>
+                        ${isPopular ? '<span class="bg-black/20 px-2 py-0.5 rounded-full text-[9px] font-bold animate-pulse">🔥 POPULIARU</span>' : ''}
                     </div>
-                    <p class="text-2xl font-medium mb-8 leading-snug">${s.text}</p>
+                    <p class="text-2xl font-bold mb-10 leading-tight">${s.text}</p>
                     <div class="flex justify-between items-center">
-                        <button onclick="handleAction(${s.id}, 'heart')" class="flex items-center gap-2 hover:scale-110 transition">
-                            <span class="text-xl">❤️</span>
-                            <span class="text-sm font-bold">${s.hearts}</span>
+                        <button onclick="handleAction(${s.id}, 'heart')" class="flex items-center gap-2 bg-black/5 px-3 py-2 rounded-full hover:bg-black/10 transition">
+                            <span>❤️</span> <span class="text-sm font-black">${s.hearts}</span>
                         </button>
-                        <div class="flex gap-3 items-center">
-                            <button onclick="handleAction(${s.id}, 'report')" class="grayscale hover:grayscale-0 transition">🚩</button>
-                            ${isAdmin ? `<button onclick="handleAction(${s.id}, 'delete')" class="hover:scale-120 transition">🗑️</button>` : ''}
+                        <div class="flex gap-2">
+                            <button onclick="handleAction(${s.id}, 'share')" class="p-2 hover:bg-black/5 rounded-full transition" title="Kopijuoti">🔗</button>
+                            ${isAdmin ? `<button onclick="handleAction(${s.id}, 'delete')" class="p-2 bg-black/10 rounded-full">🗑️</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -216,6 +277,7 @@
             });
         }
 
+        if(isAdmin) document.getElementById('logout-btn').classList.remove('hidden');
         renderWall();
     </script>
 </body>
