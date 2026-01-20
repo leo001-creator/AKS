@@ -16,11 +16,13 @@ import {
   increment
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* 🔧 FIREBASE CONFIG (ĮSIDĖK SAVO) */
 const firebaseConfig = {
-  apiKey: "TAVO_API_KEY",
-  authDomain: "TAVO_PROJECT.firebaseapp.com",
-  projectId: "TAVO_PROJECT_ID",
+  apiKey: "AIzaSyDFzEX_ijyy8xs-DLeY4Q69szi_DZZqJ2k",
+  authDomain: "aks1-2d9fb.firebaseapp.com",
+  projectId: "aks1-2d9fb",
+  storageBucket: "aks1-2d9fb.firebasestorage.app",
+  messagingSenderId: "204265537315",
+  appId: "1:204265537315:web:e714ff77136e2cb79f5696"
 };
 
 const app = initializeApp(firebaseConfig);
